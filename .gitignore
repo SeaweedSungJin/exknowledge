@@ -4,3 +4,8 @@
 #데이터셋무시
 data/images/
 data/wikipedia_preprocessed/
+
+__pycache__/
+*.py[cod]
+saliency_vlm_core/__pycache__/__init__.cpython-310.pyc
+saliency_vlm_core/__pycache__/image_processing.cpython-310.pyc

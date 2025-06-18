@@ -24,3 +24,7 @@ top_k: 10
 
 # 히트맵 생성용 쿼리
 saliency_query: "What is the name of the animal on the top?"
+
+# VQA 관련 설정
+vqa_question: "What is happening in the image?"
+vlm_model_id: "llava-hf/llava-1.5-7b-hf"

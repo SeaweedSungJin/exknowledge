@@ -7,7 +7,8 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from saliency_vlm_core.image_processing import pre_normalize_image_size
 from saliency_vlm_core.saliency import SaliencyMapper
-from saliency_vlm_core.retriever import WikiRetriever # ★★★ 새로 만든 WikiRetriever 임포트 ★★★
+from saliency_vlm_core.retriever import WikiRetriever  # ★★★ 새로 만든 WikiRetriever 임포트 ★★★
+from saliency_vlm_core.llava_vqa import LLaVAVQA
 
 def main():
     # 1. 설정 파일 로드
@@ -51,7 +52,16 @@ def main():
     print("--- 단계 4: 최종 벡터로 위키피디아 문서 검색 ---")
     results = retriever.search(query_vector, top_k=config['top_k'])
     
-    print("\n--- 최종 검색 결과 ---")
+
+    # 가장 높은 유사도를 보이는 문서의 일부만 사용
+    wiki_context = results[0]['text'] if results else ""
+
+    # VQA 모델 초기화 및 질문 수행
+    llava = LLaVAVQA(model_id=config.get('vlm_model_id', 'llava-hf/llava-v1.5-7b'))
+    answer = llava.answer(final_image_to_encode, config.get('vqa_question', ''), wiki_context)
+    print("VQA Answer:", answer)
+    
+    """    print("\n--- 최종 검색 결과 ---")
     if not results:
         print("검색 결과가 없습니다.")
     else:
@@ -60,6 +70,8 @@ def main():
             print(f"✨ 유사도: {res['similarity']:.4f}")
             text_preview = res['text'].replace("\n", " ").strip()
             print(f"📖 내용 미리보기:\n{text_preview[:250]}...\n")
+    """
+
 
 if __name__ == "__main__":
     main()

@@ -16,7 +16,9 @@ def pre_normalize_image_size(image: Image.Image, target_size: int) -> Image.Imag
         ratio = new_w / w
         new_h = int(h * ratio)
     
-    resized_image = image.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    #resized_image = image.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    resized_image = image.resize((new_w, new_h), Image.LANCZOS)
+
     return resized_image
 
 def add_auto_padding(image: Image.Image, window_size: int, stride: int) -> tuple[Image.Image, tuple[int, int]]:
