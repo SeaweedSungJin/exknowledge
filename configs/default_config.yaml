@@ -1,0 +1,26 @@
+# 기본 설정 파일
+# 파일 경로
+data_dir: "data"
+image_dir: "images"
+image_filename: "test_image_frog.jpg"
+faiss_index_name: "wiki.index"
+wiki_data_name: "wiki_data.pkl"
+
+# CLIP 모델
+model_id: "openai/clip-vit-base-patch32"
+
+# 사전 정규화 파라미터
+pre_normalize_size: 512
+
+# 슬라이딩 윈도우 파라미터
+window_size: 128
+stride: 64
+
+# 중요 영역 선정 파라미터
+keep_top_percent: 25
+
+# 검색 파라미터
+top_k: 10
+
+# 히트맵 생성용 쿼리
+saliency_query: "What is the name of the animal on the top?"

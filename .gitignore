@@ -1,0 +1,6 @@
+#연습폴더무시
+.datasets/
+.wikitest/
+#데이터셋무시
+data/images/
+data/wikipedia_preprocessed/
