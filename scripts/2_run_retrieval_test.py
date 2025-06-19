@@ -57,7 +57,7 @@ def main():
     wiki_context = results[0]['text'] if results else ""
 
     # VQA 모델 초기화 및 질문 수행
-    llava = LLaVAVQA(model_id=config.get('vlm_model_id', 'llava-hf/llava-v1.5-7b'))
+    llava = LLaVAVQA(model_id=config.get('vlm_model_id', 'llava-hf/llava-1.5-7b-hf'))
     answer = llava.answer(final_image_to_encode, config.get('vqa_question', ''), wiki_context)
     print("VQA Answer:", answer)
     
