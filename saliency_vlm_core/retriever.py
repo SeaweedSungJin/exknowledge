@@ -24,17 +24,25 @@ class WikiRetriever:
 
         # 1. CLIP 모델 및 프로세서 로드
         print(f"CLIP 모델 로딩: {self.config['model_id']}")
-        self.model = CLIPModel.from_pretrained(self.config['model_id']).to(self.device)
-        self.processor = CLIPProcessor.from_pretrained(self.config['model_id'])
+        self.model = CLIPModel.from_pretrained(self.config["model_id"]).to(self.device)
+        self.processor = CLIPProcessor.from_pretrained(self.config["model_id"])
         self.model.eval()
 
         # 2. FAISS 인덱스 로드
-        faiss_path = os.path.join(self.config['data_dir'], "wikipedia_preprocessed", self.config['faiss_index_name'])
+        faiss_path = os.path.join(
+            self.config["data_dir"],
+            "wikipedia_preprocessed",
+            self.config["faiss_index_name"],
+        )        
         print(f"FAISS 인덱스 로딩: {faiss_path}")
         self.index = faiss.read_index(faiss_path)
 
         # 3. 위키피디아 데이터(제목, 본문) 로드
-        data_path = os.path.join(self.config['data_dir'], "wikipedia_preprocessed", self.config['wiki_data_name'])
+        data_path = os.path.join(
+            self.config["data_dir"],
+            "wikipedia_preprocessed",
+            self.config["wiki_data_name"],
+        )
         print(f"위키피디아 데이터 로딩: {data_path}")
         with open(data_path, "rb") as f_in:
             wiki_data = pickle.load(f_in)
@@ -65,10 +73,12 @@ class WikiRetriever:
         for rank, idx in enumerate(indices[0]):
             if idx == -1:
                 continue
-            results.append({
-                "rank": rank + 1,
-                "title": self.titles[idx],
-                "similarity": float(similarities[0][rank]),
-                "text": self.texts[idx]
-            })
+            results.append(
+                {
+                    "rank": rank + 1,
+                    "title": self.titles[idx],
+                    "similarity": float(similarities[0][rank]),
+                    "text": self.texts[idx],
+                }
+            )
         return results

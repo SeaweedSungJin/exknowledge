@@ -21,7 +21,9 @@ def pre_normalize_image_size(image: Image.Image, target_size: int) -> Image.Imag
 
     return resized_image
 
-def add_auto_padding(image: Image.Image, window_size: int, stride: int) -> tuple[Image.Image, tuple[int, int]]:
+def add_auto_padding(
+    image: Image.Image, window_size: int, stride: int
+) -> tuple[Image.Image, tuple[int, int]]:
     """
     이미지에 슬라이딩 윈도우를 적용할 때 가장자리에 남는 픽셀이 없도록,
     오른쪽과 아래쪽에 '반사' 패딩을 자동으로 추가합니다.
@@ -43,7 +45,9 @@ def add_auto_padding(image: Image.Image, window_size: int, stride: int) -> tuple
             pad_h = stride - rem_h
 
     if pad_w > 0 or pad_h > 0:
-        padded_image = TF.pad(image, padding=(0, 0, pad_w, pad_h), padding_mode='reflect')
+        padded_image = TF.pad(
+            image, padding=(0, 0, pad_w, pad_h), padding_mode="reflect"
+        )    
     else:
         padded_image = image
         
