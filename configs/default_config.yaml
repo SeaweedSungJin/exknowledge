@@ -21,6 +21,7 @@ keep_top_percent: 25
 
 # 검색 파라미터
 top_k: 10
+top_m: 10 #테스팅용
 
 # 히트맵 생성용 쿼리
 saliency_query: "What is the animal in the center?"

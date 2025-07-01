@@ -1,3 +1,4 @@
+#2_run_retrieval_test.py
 import os
 import yaml
 from PIL import Image
@@ -9,6 +10,7 @@ from saliency_vlm_core.image_processing import pre_normalize_image_size
 from saliency_vlm_core.saliency import SaliencyMapper
 from saliency_vlm_core.retriever import WikiRetriever  
 from saliency_vlm_core.llava_vqa import LLaVAVQA
+from saliency_vlm_core.contriever_reranker import ContrieverReranker
 
 def main():
     # 1. 설정 파일 로드
@@ -73,8 +75,25 @@ def main():
         print(f"컨텍스트를 {max_len}자로 축약하여 사용합니다:")
         print(f'"""\n{wiki_context}...\n"""\n')
     else:
-        print("검색된 문서가 없습니다.\n")
-        #~~~~~~~~~~
+        for res in results:
+            print(f"🔍 순위 {res['rank']}: {res['title']} (유사도: {res['similarity']:.4f})")
+
+    # Contriever를 사용한 문장 랭킹
+    contriever = ContrieverReranker(device=retriever.device)
+    top_sentence_k = config.get("top_sentence_k", 5)
+    ranked_sentences = contriever.rank_sentences(config.get("vqa_question", ""), results, top_k=top_sentence_k)
+
+    print(f"\n--- [결과 2] 텍스트 질문과 가장 유사한 Top-{top_sentence_k} 문장 ---")
+    if not ranked_sentences:
+        print("관련성 높은 문장을 찾을 수 없습니다.")
+    else:
+        for idx, s in enumerate(ranked_sentences):
+            print(
+                f"🎯 문장 순위 {idx + 1} | 출처 문서: {s['source_title']} | 섹션: {s['section']} | 유사도: {s['similarity']:.4f}"
+            )
+            print(f"   -> {s['sentence']}\n")
+
+    wiki_context = ranked_sentences[0]["sentence"] if ranked_sentences else ""
 
 
     # VQA 모델 초기화 및 질문 수행
