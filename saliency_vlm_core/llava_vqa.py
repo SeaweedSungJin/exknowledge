@@ -79,12 +79,12 @@ class LLaVAVQA:
         print(f"\n[Prompt Sent to Processor]:\n---\n{prompt}\n---")
         
         # 2. 모델이 생성한 '날 것'의 토큰 ID 전체를 확인
-        print(f"\n[Raw Generated IDs (Prompt + Answer)]:\n{generate_ids}")
+        #print(f"\n[Raw Generated IDs (Prompt + Answer)]:\n{generate_ids}")
         
         # 3. 특수 토큰(<s>, </s>)을 포함하여 전체 생성 내용을 디코딩
         # 이 부분을 통해 모델이 답변 없이 바로 문장 종료(</s>)를 하는지 확인할 수 있습니다.
         full_decoded_text = self.processor.batch_decode(generate_ids, skip_special_tokens=False)[0]
-        print(f"\n[Full Decoded Output (with special tokens)]:\n---\n{full_decoded_text}\n---")
+        #print(f"\n[Full Decoded Output (with special tokens)]:\n---\n{full_decoded_text}\n---")
         
         print("--------------------------\n")
 

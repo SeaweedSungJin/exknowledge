@@ -12,6 +12,9 @@ from saliency_vlm_core.retriever import WikiRetriever
 from saliency_vlm_core.llava_vqa import LLaVAVQA
 from saliency_vlm_core.contriever_reranker import ContrieverReranker
 
+# DEBUG 플래그: 출력 문구를 손쉽게 끄기 위한 변수
+VERBOSE = True
+
 def main():
     # 1. 설정 파일 로드
     print("--- 설정 파일 로드 ---")
@@ -51,9 +54,19 @@ def main():
     query_vector = retriever.encode_image(final_image_to_encode)
     print("최종 쿼리 벡터 생성 완료.\n")
 
-    # Retriever를 통해 FAISS 검색 및 결과 출력 
+    # Retriever를 통해 FAISS 검색 및 결과 출력
     print("--- 최종 벡터로 위키피디아 문서 검색 ---")
     results = retriever.search(query_vector, top_k=config["top_k"])
+
+    top_m = config.get("top_m", len(results))
+    if VERBOSE:
+        print(f"\n[DEBUG] Top-{top_m} 검색 결과")
+        for res in results[:top_m]:
+            print(
+                f"🔍 순위 {res['rank']}: {res['title']} (유사도: {res['similarity']:.4f})"
+            )
+        print()
+
     # 검색 결과가 있는지 확인하고, 가장 유사도가 높은 문서의 제목을 'title'을 출력합니다.
     if results:
         top_result = results[0]
@@ -80,18 +93,21 @@ def main():
 
     # Contriever를 사용한 문장 랭킹
     contriever = ContrieverReranker(device=retriever.device)
-    top_sentence_k = config.get("top_sentence_k", 5)
-    ranked_sentences = contriever.rank_sentences(config.get("vqa_question", ""), results, top_k=top_sentence_k)
+    top_sentence_k = config.get("top_m", 10)
+    ranked_sentences = contriever.rank_sentences(
+        config.get("vqa_question", ""), results, top_k=top_sentence_k
+    )
 
-    print(f"\n--- [결과 2] 텍스트 질문과 가장 유사한 Top-{top_sentence_k} 문장 ---")
-    if not ranked_sentences:
-        print("관련성 높은 문장을 찾을 수 없습니다.")
-    else:
-        for idx, s in enumerate(ranked_sentences):
-            print(
-                f"🎯 문장 순위 {idx + 1} | 출처 문서: {s['source_title']} | 섹션: {s['section']} | 유사도: {s['similarity']:.4f}"
-            )
-            print(f"   -> {s['sentence']}\n")
+    if VERBOSE:
+        print(f"\n[DEBUG] 텍스트 질문과 가장 유사한 Top-{top_sentence_k} 문장")
+        if not ranked_sentences:
+            print("관련성 높은 문장을 찾을 수 없습니다.")
+        else:
+            for idx, s in enumerate(ranked_sentences):
+                print(
+                    f"🎯 문장 순위 {idx + 1} | 출처 문서: {s['source_title']} | 섹션: {s['section']} | 유사도: {s['similarity']:.4f}"
+                )
+                print(f"   -> {s['sentence']}\n")
 
     wiki_context = ranked_sentences[0]["sentence"] if ranked_sentences else ""
 
@@ -102,17 +118,6 @@ def main():
         final_image_to_encode, config.get("vqa_question", ""), wiki_context
     )
     print("VQA Answer:", answer)
-    
-    """    print("\n--- 최종 검색 결과 ---")
-    if not results:
-        print("검색 결과가 없습니다.")
-    else:
-        for res in results:
-            print(f"🔍 순위 {res['rank']}: {res['title']}")
-            print(f"✨ 유사도: {res['similarity']:.4f}")
-            text_preview = res['text'].replace("\n", " ").strip()
-            print(f"📖 내용 미리보기:\n{text_preview[:250]}...\n")
-    """
 
 
 if __name__ == "__main__":
