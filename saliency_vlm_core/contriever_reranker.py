@@ -9,10 +9,16 @@ class ContrieverReranker:
     def __init__(self, model_name: str = "facebook/contriever-msmarco", device: str | None = None):
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.model = SentenceTransformer(model_name, device=self.device)
+       # Ensure NLTK tokenizers are available.  Newer NLTK versions require
+        # both ``punkt`` and ``punkt_tab`` so we download them if missing.
         try:
-            nltk.data.find('tokenizers/punkt')
-        except LookupError:
-            nltk.download('punkt')
+            nltk.data.find("tokenizers/punkt")
+        except LookupError:  # pragma: no cover - local environment setup
+            nltk.download("punkt")
+        try:
+            nltk.data.find("tokenizers/punkt_tab")
+        except LookupError:  # pragma: no cover - local environment setup
+            nltk.download("punkt_tab")
 
     @staticmethod
     def _extract_sentences_with_section(text: str):

@@ -2,7 +2,7 @@
 # 파일 경로
 data_dir: "data"
 image_dir: "images"
-image_filename: "test_image_frog.jpg"
+image_filename: "piat.jpg"
 faiss_index_name: "wiki.index"
 wiki_data_name: "wiki_data.pkl"
 
@@ -24,7 +24,7 @@ top_k: 10
 top_m: 10 #테스팅용
 
 # 히트맵 생성용 쿼리
-saliency_query: "What is the animal in the center?"
+saliency_query: "What is this car?"
 
 
 # VQA 관련 설정

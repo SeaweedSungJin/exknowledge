@@ -45,12 +45,13 @@ class LLaVAVQA:
             prompt += f"\n{context}"
         # 모델의 역할을 '비서'로자유로운 답변을 유도
         prompt += "\nASSISTANT:"
-"""
+        """
         prompt = (
             f"<image>\n"
-            f"Context: {context}\n"
+            #f"Context: {context}\n"
             f"Question: {question}\n"
-            f"Answer:"
+            f"Just answer the question. No explanation needed.\n"
+            f"Short Answer:"
         )
 
         # 참고: 프롬프트가 길어졌으므로, 모델의 최대 컨텍스트 길이를 넘지 않도록 주의해야 합니다.

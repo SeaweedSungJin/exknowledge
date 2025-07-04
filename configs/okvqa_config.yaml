@@ -1,0 +1,22 @@
+# OK-VQA inference configuration
+# Wiki retrieval settings
+faiss_index_name: "wiki.index"
+wiki_data_name: "wiki_data.pkl"
+data_dir: "data"
+model_id: "openai/clip-vit-base-patch32"
+pre_normalize_size: 512
+window_size: 128
+stride: 64
+keep_top_percent: 25
+# Retrieval settings
+top_k: 10
+# Sentence reranker
+top_m: 10
+# VQA model
+vlm_model_id: "llava-hf/llava-1.5-7b-hf"
+# OK-VQA dataset path
+okvqa_root: "data/okvqa"
+split: "val2014"
+num_samples: 5
+# 데이터 시작 인덱스. 원하는 구간을 지정할 때 사용
+start_index: 0

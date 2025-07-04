@@ -1,5 +1,5 @@
 #연습폴더무시
-.datasets/
+.tester/
 .wikitest/
 #데이터셋무시
 data/
